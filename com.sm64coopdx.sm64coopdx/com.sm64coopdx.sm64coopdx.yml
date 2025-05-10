@@ -28,7 +28,7 @@ modules:
       - type: file
         path: sm64coopdx.sh
     build-commands:
-      - make NOEXTRACT=1 -j
+      - make -j
       - cp -r build/us_pc ${FLATPAK_DEST}/sm64coopdx
       - install -Dm644 ${FLATPAK_DEST}/sm64coopdx/libdiscord_game_sdk.so ${FLATPAK_DEST}/lib/libdiscord_game_sdk.so
       - install -Dm755 sm64coopdx.sh ${FLATPAK_DEST}/bin/sm64coopdx
