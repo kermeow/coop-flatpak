@@ -1,0 +1,66 @@
+id: com.sm64coopdx.sm64coopdx
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: sm64coopdx
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --device=input
+  - --share=network
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create
+
+modules:
+  - name: sm64coopdx
+    buildsystem: simple
+    sources:
+        # Latest version of sm64coopdx
+      - type: git
+        url: https://github.com/coop-deluxe/sm64coopdx.git
+        # branch: dev
+        tag: v1.3.1
+        commit: 8fc78a07ee7e0c024ea3baaed923c645e0f605a0
+        # Wrapper
+      - type: file
+        path: sm64coopdx.sh
+    build-commands:
+      - make NOEXTRACT=1 -j4
+      - cp -r build/us_pc ${FLATPAK_DEST}/sm64coopdx
+      - install -Dm644 ${FLATPAK_DEST}/sm64coopdx/libdiscord_game_sdk.so ${FLATPAK_DEST}/lib/libdiscord_game_sdk.so
+      - install -Dm755 sm64coopdx.sh ${FLATPAK_DEST}/bin/sm64coopdx
+
+  - name: desktop
+    buildsystem: simple
+    sources:
+        # Meta files
+      - type: file
+        path: com.sm64coopdx.sm64coopdx.metainfo.xml
+      - type: file
+        path: com.sm64coopdx.sm64coopdx.desktop
+      - type: file
+        path: icon.png
+    build-commands:
+      - install -Dm644 icon.png ${FLATPAK_DEST}/share/icons/hicolor/256x256/apps/${FLATPAK_ID}.png
+      - install -Dm644 ${FLATPAK_ID}.metainfo.xml ${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.metainfo.xml
+      - install -Dm644 ${FLATPAK_ID}.desktop ${FLATPAK_DEST}/share/applications/${FLATPAK_ID}.desktop
+
+cleanup: # Unnecessary files from build
+  - '/sm64coopdx/actors'
+  - '/sm64coopdx/asm'
+  - '/sm64coopdx/assets'
+  - '/sm64coopdx/bin'
+  - '/sm64coopdx/data'
+  - '/sm64coopdx/include'
+  - '/sm64coopdx/levels'
+  - '/sm64coopdx/lib'
+  - '/sm64coopdx/rsp'
+  - '/sm64coopdx/sound'
+  - '/sm64coopdx/src'
+  - '/sm64coopdx/text'
+  - '/sm64coopdx/textures'
+  - '/sm64coopdx/endian-and-bitwidth'
+  - '/sm64coopdx/level_rules.mk'
